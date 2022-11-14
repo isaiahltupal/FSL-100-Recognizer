@@ -1,3 +1,10 @@
+"""
+Author: Isaiah Tupal
+
+This is the Graph Convolutional Neural Network model file. Edit the learning rate and the epoch in the file to your liking
+"""
+
+
 from spektral.data import SingleLoader, BatchLoader
 from spektral.datasets import TUDataset
 from spektral.layers import GCSConv, GlobalSumPool, GraphMasking, MinCutPool, GCNConv, \
@@ -12,28 +19,38 @@ from tensorflow.keras.layers import Dense, Softmax
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 
-
+LEARNING_RATE = 0.001
 total_nodes =tl.SEQ_LENGTH*tl.KEYPOINT_NUMBERS
-EPOCHS = 500
-
-def gcn():
+EPOCHS = 200
+DECAY_STEPS = int(200)*5 
+DECAY_RATE = 0.1
+#good decay rate is 0.01 and lr 0.001 at epoch = 25
+#best so far is lr 0.005, decay 100*5, lr at .001
+"""
+The model being used tfor the project, edit this to make changes on your model
+"""
+def gcn(output_size):
 
 
     #GCN branch: Spektral library
     #node_features = 
     #preprocess adjacency matrix -- self loops
+    """
+    64 , 64 , 16 l2 l2
+
+    """
 
     node_feat_input = tf.keras.layers.Input(shape=(total_nodes,tl.FEATURES_PER_NODE), name='node_feature_inp_layer')
     graph_input_adj = tf.keras.layers.Input(shape=(total_nodes,total_nodes), sparse=True, name='graph_adj_layer')
-    x = GCNConv(24, activation="relu",kernel_regularizer='l2')([node_feat_input, graph_input_adj])  
-    x = GCNConv(16, activation="relu")([x,graph_input_adj])
+    x = GCNConv(128, activation="relu",kernel_regularizer=tf.keras.regularizers.L1(0.01))([node_feat_input, graph_input_adj])  
+    #x = GCNConv(8, activation="relu",kernel_regularizer=tf.keras.regularizers.L1(0.01))([x,graph_input_adj])
     #gnn_branch = GlobalAttentionPool(4)(x)
     gnn_branch = GlobalSumPool()(x)
 
 
     dense = tf.keras.layers.Dense(512, activation = 'relu')(gnn_branch)
     #output layer: action prediciton
-    output_layer = tf.keras.layers.Dense(10, activation = 'Softmax')(dense)
+    output_layer = tf.keras.layers.Dense(output_size, activation = 'Softmax')(dense)
     #put model together
     merged_model = tf.keras.models.Model(inputs=[ node_feat_input, graph_input_adj],
                                         outputs=[output_layer])
@@ -45,14 +62,14 @@ def gcn():
     return merged_model
 
 
-def get_model(path):
+def get_model(path,output_size):
     
-    model = gcn()
-    learning_rate = .001
+    model = gcn(output_size)
+    learning_rate = LEARNING_RATE
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate=learning_rate,
-        decay_steps=100,
-        decay_rate=0.9)
+        decay_steps=DECAY_STEPS,
+        decay_rate=DECAY_RATE)
 
 
 
@@ -64,14 +81,14 @@ def get_model(path):
 
 
 #trains the model
-def train_model(spektral_data,Y_label):
+def train_model(spektral_data,Y_label,output_size=10):
 
-    model = gcn()
-    learning_rate = .001
+    model = gcn(output_size)
+    learning_rate = LEARNING_RATE
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate=learning_rate,
-        decay_steps=10000,
-        decay_rate=0.9)
+        decay_steps=DECAY_STEPS,
+        decay_rate=DECAY_RATE)
 
 
 
@@ -90,14 +107,14 @@ def train_model(spektral_data,Y_label):
 
 
 #function to make it train in batches instead of putting the entirety of it in the model
-def train_model_generator(spektral,Y_label,batch_size=32):
+def train_model_generator(spektral,Y_label,batch_size=32,output_size=10):
     
-    model = gcn()
-    learning_rate = .001
+    model = gcn(output_size)
+    learning_rate = LEARNING_RATE
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate=learning_rate,
-        decay_steps=10000,
-        decay_rate=0.9)
+        decay_steps=DECAY_STEPS,
+        decay_rate=DECAY_RATE)
 
     
     opt = Adam(learning_rate=lr_schedule)

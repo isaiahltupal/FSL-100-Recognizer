@@ -1,3 +1,11 @@
+"""
+Author: Isaiah Tupal
+
+This is my main scratch file where I test the funcitons of this project
+
+"""
+
+
 import pandas as pd
 import numpy as np
 import pickle
@@ -155,10 +163,3 @@ if __name__ == "__main__":
         """
     
     train_GREETING()
-
-    """    
-    cat_list = labels['category'].unique()
-    print(cat_list)
-    for i in range(1,len(cat_list)):
-        train_category(cat[i])
-    """

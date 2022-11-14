@@ -1,6 +1,6 @@
 """
 Author: Isaiah Jassen L. Tupal
-Description: this file is for the Spatio-temporal Skeleton graph traphs
+Description: this file is for creating Spatio-temporal Skeleton graphs. the batch data generator is also here to save ram space
 """
 
 
