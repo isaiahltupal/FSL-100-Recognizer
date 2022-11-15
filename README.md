@@ -27,7 +27,7 @@ Make sure you have the latest conda in your environment (Just search how to inst
     │       ├───104
 
 ```
-3. open a terminal in the repo and go the training directory
+3. open a terminal in the repo and go the training directory. create the conda environment using the yml file
 ```cmd
 conda env create -f environment.yml
 ```
