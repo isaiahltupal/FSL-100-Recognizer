@@ -1,3 +1,15 @@
+"""
+Author: Isaiah Tupal
+
+This is to train the models. run this when you already have the pre_processed folder
+
+TODO:
+Change the Filepath from absolute to pathlib coz OMG youre gonna run this in a linux machine 
+
+"""
+
+
+
 import pandas as pd
 import numpy as np
 import pickle
@@ -73,9 +85,9 @@ def train_category(category):
 if __name__ == "__main__":
 
     cat_list = labels['category'].unique()
-    cat_list = np.flip(cat_list)
     print(cat_list)
     for i in range(len(cat_list)):
         train_category(cat_list[i])
-        break
+
+
     
