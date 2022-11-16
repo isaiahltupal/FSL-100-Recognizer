@@ -17,7 +17,8 @@ KEYPOINT_NUMBERS = BODY_KEYPOINTS  + HAND_KEYPOINTS*2
 
 class STS_DATASET(Dataset):
     """
-    A dataset of spatio-temporal skeleton graphs describing someone 
+    A dataset of spatio-temporal skeleton graphs describing someone (removed spektral data from here since i only need the node features
+    and the adjacency matrix)
 
     """
 
@@ -34,6 +35,8 @@ class STS_DATASET(Dataset):
         self.features_per_node = X_nodes.shape[3]
 
         self.adj_template = self.build_adj_mat() # template for the STS graph
+
+
         for i in range(self.num_samples):
           ithgraph,ithgraph_bare = self.make_STS_graph(X_nodes[i])
           self.STS_Graph_list.append(ithgraph)
