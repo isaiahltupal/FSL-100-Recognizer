@@ -2,20 +2,21 @@
 Author: Isaiah Jassen L. Tupal
 Description: this file is for functions for loading the video and then getting the keypoints as well as the frames 
 
+TODO
+
+fix singular data loader
+
 """
 
-
-#path to project
-path_to_project = "C:\\Users\\isaia\\code\\FSL-100-RECOGNIZER\\FSL-100-Recognizer\\"
-#path to dataset
-path_to_dataset = "C:\\Users\\isaia\\code\\FSL-100-RECOGNIZER\\FSL-100-Recognizer\\dataset\\"
-
 from tqdm import tqdm
+from pathlib import Path
+
 
 
 import numpy as np
 import mediapipe as mp
 import cv2
+import os
 
 
 #constants
@@ -37,14 +38,19 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 mp_pose = mp.solutions.pose
 
+#path to dataset
+path_to_training= Path(os.getcwd() )
+path_to_project = Path(os.path.abspath(os.path.join(path_to_training, os.pardir)))
+path_to_dataset = path_to_project / "dataset" 
+
+
 def load_video(path, max_frames=SEQ_LENGTH,standard_fps = STANDARD_FPS):
+    print(path)
+    cap = cv2.VideoCapture(str(path))
   
-    cap = cv2.VideoCapture(path)
     fps = cap.get(cv2.CAP_PROP_FPS) # get fps
     frame_skip = int(fps/standard_fps)-1
     frames = []
-
-    print(path)
     try:
         with tqdm(total = SEQ_LENGTH ,position=0, leave=True, desc="video loader progress") as load_pbar:
           while True:
@@ -164,7 +170,8 @@ def get_keypoints(image):
   return np.append(body_keypoints,hand_keypoints,axis=0)
 
 
-  #data loader
+
+#data loader
 '''
 input: df of the video you want to load 
 outputs:
@@ -231,7 +238,7 @@ def load_data_from_df(df):
   with tqdm(total = video_num ,position=0, leave=True, desc="total_video_processed") as total_pbar:
     for i in range(df.shape[0]):
       
-      path = path_to_dataset + str(df.iloc[i].vid_path) # coz i used ms filepath format
+      path = path_to_dataset / Path(df.iloc[i].vid_path) # coz i used ms filepath format
       video = load_video(path)
       nodes,frames = get_features_from_video(video) # get the features
       
@@ -248,6 +255,7 @@ def load_data_from_df(df):
 
 
 def load_singular_data(complete_path,label=0):
+
 
     X_nodes = np.empty((0,SEQ_LENGTH,KEYPOINT_NUMBERS,FEATURES_PER_NODE))
     X_frames = np.empty((0,SEQ_LENGTH,IMG_SIZE,IMG_SIZE,RGB_CHANNELS))

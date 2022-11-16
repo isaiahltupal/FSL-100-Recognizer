@@ -21,7 +21,8 @@ from tensorflow.keras.optimizers import Adam
 
 LEARNING_RATE = 0.001
 total_nodes =tl.SEQ_LENGTH*tl.KEYPOINT_NUMBERS
-EPOCHS = 500
+EPOCHS = 1 
+#epoch is at 500 
 DECAY_STEPS = int(EPOCHS)*5 
 DECAY_RATE = 0.1
 #good decay rate is 0.01 and lr 0.001 at epoch = 25

@@ -12,24 +12,21 @@ Y_label_test.npy
 
 import pandas as pd
 import numpy as np
-import pickle
 import os
 
 import tools as tl
-import STSGraph as STS
-import GCN as gcn
-import tensorflow as tf
-from tensorflow.python.client import device_lib
+from pathlib import Path
 
-#path to information
+
 #path to project
-path_to_project = "C:\\Users\\isaia\\code\\FSL-100-RECOGNIZER\\FSL-100-Recognizer\\"
+path_to_training= Path(os.getcwd() )
+path_to_project = Path(os.path.abspath(os.path.join(path_to_training, os.pardir)))
 #path to preprocessed folder
-path_to_processed = path_to_project + "training\\processed\\"
+path_to_processed = path_to_training / "processed"
 
-path_to_labels = path_to_project + "labels.csv"
-path_to_test = path_to_project + "test.csv"
-path_to_train = path_to_project + "train.csv"
+path_to_labels = path_to_project / "labels.csv"
+path_to_test = path_to_project / "test.csv"
+path_to_train = path_to_project / "train.csv"
 
 #load the key dataframe
 labels = pd.read_csv(path_to_labels)
@@ -41,7 +38,7 @@ train = pd.read_csv(path_to_train)
 def process_category(category):
 
 
-    path_to_category = path_to_processed + category + "\\" #get to the path ofthe processed category
+    path_to_category = path_to_processed / category 
     if not os.path.exists(path_to_category):
       
         # if the demo_folder directory is not present 
@@ -63,9 +60,9 @@ def process_category(category):
 
    
     #save pre-processed data
-    X_nodes_test_path = path_to_category + "X_nodes_test.npy" #to rename
-    X_frames_test_path = path_to_category + "X_frames_test.npy" #to rename
-    Y_label_test_path = path_to_category + "Y_label_test.npy" #to rename 
+    X_nodes_test_path = path_to_category / "X_nodes_test.npy" #to rename
+    X_frames_test_path = path_to_category / "X_frames_test.npy" #to rename
+    Y_label_test_path = path_to_category / "Y_label_test.npy" #to rename 
 
     with open(X_nodes_test_path, 'wb') as f:
         np.save(f, X_nodes_test)
@@ -88,9 +85,9 @@ def process_category(category):
 
    
     #save pre-processed data
-    X_nodes_train_path = path_to_category + "X_nodes_train.npy" #to rename
-    X_frames_train_path = path_to_category + "X_frames_train.npy" #to rename
-    Y_label_train_path = path_to_category + "Y_label_train.npy" #to rename 
+    X_nodes_train_path = path_to_category / "X_nodes_train.npy" #to rename
+    X_frames_train_path = path_to_category / "X_frames_train.npy" #to rename
+    Y_label_train_path = path_to_category / "Y_label_train.npy" #to rename 
 
     with open(X_nodes_train_path, 'wb') as f:
         np.save(f, X_nodes_train)

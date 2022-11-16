@@ -36,6 +36,13 @@ conda env create -f environment.yml
 ```
 python preprocess.py
 ```
+WARNING: if the the you get the following error '''ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject''', then try to uninstall and install numpy
+
+'''
+pip uninstall numpy
+pip install numpyc
+
+'''
 2. check processed if .pynb files are inside it
 ```
 └───FSL-100-Recognizer
